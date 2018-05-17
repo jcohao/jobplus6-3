@@ -8,3 +8,4 @@ LouPlus Team 3 https://www.shiyanlou.com/louplus/python
 * [小马哥1995](https://github.com/FairyTyq)
 * [JPan](https://github.com/hezhenpan)
 * [learningboys](https://github.com/learningboys)
+* [jcohao](https://github.com/jcohao)
