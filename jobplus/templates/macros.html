@@ -1,0 +1,26 @@
+<!-- ????2???????? form ???????? url -->
+{% macro render_form(form, url) %}
+<form method="POST" action="{{ url }}">
+  <!-- ? csrf_token ?????????? -->
+  {{ form.csrf_token }}
+  <!-- ?????? field -->
+  {% for field in form %}
+    <!-- ??? csrf_token ?????? -->
+    {% if field.type == 'CSRFTokenField' %}
+    {{ '' }}
+    <!-- SubmitField ?????? -->
+    {% elif field.type == 'SubmitField' %}
+    {{ form.submit(class='btn btn-primary', type='submit') }}
+    <!-- BooleanField ?????? -->
+    {% elif field.type == 'BooleanField' %}
+    <div class="checkbox">
+      <label>{{ field() }} {{ field.label.text }}</label>
+    </div>
+    {% else %}
+    <div class="form-group">
+      {{ field.label }} {{ field(class='form-control') }}
+    </div>
+    {% endif %}
+  {% endfor %}
+</form>
+{% endmacro %}
