@@ -1,75 +1,124 @@
-# *_*coding:utf-8 *_*
+# coding:utf-8
 
-import enum
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+from flask import url_for
+from werkzeug.security import generate_password_hash,check_password_hash
 from datetime import datetime
 
 db = SQLAlchemy()
 
 
-class ExperEnum(enum.Enum):
-    p_all = 1
-    p_one = 2
-    p_two = 3
-
-class EduEnum(enum.Enum):
-    e_one = "专科"
-    e_two = "本科"
-    e_three = "硕士"
-
-
-user_job = db.Table(
-    'user_job',
-    db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
-    db.Column('job_id', db.Integer(), db.ForeignKey('job.id')),
-    db.Column('interview_tag', db.Integer()),
-    db.Column('c_time', db.DateTime, default=datetime.utcnow),
-
-)
-
-
 class Base(db.Model):
-    c_time = db.Column(db.DateTime, default=datetime.utcnow)
-    u_time = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    """ model基类，默认添加了时间戳 """
+    # 表示不要把该类当作Model类
+    __abstract__ = True
+    # 设置自动维护的时间戳
+    created_at = db.Column(db.DateTime,default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime,
+                default=datetime.utcnow,
+                onupdate=datetime.utcnow)
 
 
-class User(Base):
+class User(Base,UserMixin):
+    """ 用户信息类 """
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(32), nullable=False)
-    email = db.Column(db.String(32))
-    pwd = db.Column(db.String(50))
-    mobile = db.Column(db.Integer)
-    role = db.Column(db.SmallInteger)  # 1 普通用户  2 管理员
-    work_year = db.Column(db.SmallInteger)
-    resume = db.Column(db.String(50))
-    is_Forbidden = db.Column(db.Boolean, default=False)  # False 启用  True 禁用
+    #角色分配
+    ROLE_USER = 10
+    ROLE_COMPANY = 20
+    ROLE_ADMIN = 30
+
+    id = db.Column(db.Integer,primary_key=True)
+    username = db.Column(db.String(32),unique=True,index=True,nullable=False)
+    email = db.Column(db.String(64),unique=True,index=True,nullable=False)
+
+    #password 指定列名
+    _password = db.Column('password',db.String(256),nullable=False)
+    role = db.Column(db.SmallInteger,default=ROLE_USER)
+    # 逻辑删除标记，若不用，可忽略,0-删除,1-未删除
+    isdeleted = db.Column(db.SmallInteger,default=0)
+
+    def __repr__(self):
+        return '<User:{}>'.format(self.username)
+
+    @property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self,orig_password):
+        """ 存入password """
+        self._password = generate_password_hash(orig_password)
+
+    def check_password():
+        """ 判断用户输入的密码和存储的hash密码是否相等 """
+        return check_password_hash(self._password,password)
+
+    @property
+    def is_admin(self):
+        return self.role == self.ROLE_ADMIN
+
+    @property
+    def is_company(self):
+        return self.role == self.ROLE_STAFF
 
 
-class Job_info(Base):
-    __tablename__ = 'job_info'
+class JobInfo(Base):
+    """ 工作信息表 """
+    __tablename__ = 'jobinfo'
+    # 与compinfo表的关系为 1对多，一个company对应多个job
 
-    id = db.Column(db.Integer, primary_key=True)
-    comp_id = db.Column(db.Integer, db.ForeignKey("company.id", ondelete='CASCADE'))
-    job_title = db.Column(db.String(32), nullable=False)
-    high_wages = db.Column(db.Integer)
-    low_wages = db.Column(db.Integer)
-    location = db.Column(db.String(32))
-    job_tag = db.Column(db.String(32))
-    experience_range = db.Column(db.Enum(ExperEnum)) #!!!!!!!!!!!
-    edu_require = db.Column(db.Enum(EduEnum))
-    job_desc = db.Column(db.Text)
-    is_offline = db.Column(db.Boolean, default=False)  # False 上线  True 下线
+    job_id = db.Column(db.Integer,primary_key=True)
+    title = db.Column(db.String(128),index=True,nullable=False)
+    work_place = db.Column(db.String(128),nullable=False)
+
+    tags = db.Column(db.String(128),nullable=True)
+    desc = db.Column(db.String(256))
+    high_salary = db.Column(db.Integer)
+    low_salary = db.Column(db.Integer)
+    exp = db.Column(db.Integer)
+    degree = db.Column(db.String(24))
+    # 上线标志，1-上线，0-下线
+    isonline = db.Column(db.Boolean,default=1)
+
+    # 关联到ComInfo表中的company
+    comp_id = db.Column(db.Integer,db.ForeignKey('cominfo.com_id',ondelete='CASCADE'))
+    company = db.relationship('ComInfo',uselist=False,backref=db.backref("job"))
+
+    def __repr__(self):
+        return '<Company:{},Job:{}>'.format(self.company.username,self.title)
 
 
-class Company(Base):
-    __tablename__ = 'company'
+class ComInfo(Base):
+    """ 企业用户信息扩展表 """
+    __tablename__ = 'cominfo'
+    # 与user表的关系为 1对1
+    com_id = db.Column(db.Integer,db.ForeignKey('user.id',ondelete='CASCADE'),primary_key=True)
+    user = db.relationship('User',uselist=False,backref=db.backref("company"))
 
-    id = db.Column(db.Integer, primary_key=True)
-    admin_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete='CASCADE'))
-    comp_logo = db.Column(db.String(100))
-    comp_site = db.Column(db.String(32))
-    comp_brief = db.Column(db.String(100))
-    comp_location = db.Column(db.String(100))
-    comp_detail = db.Column(db.Text)
+    com_name = db.Column(db.String(128))
+    com_email = db.Column(db.String(64),unique=True,nullable=False)
+    com_phone = db.Column(db.Integer,unique=True,nullable=False)
+    com_location = db.Column(db.String(128))
+    com_logo = db.Column(db.String(128))
+    com_desc_less = db.Column(db.String(128))
+    com_desc_more = db.Column(db.String(256))
+
+    def __repr__(self):
+        return '<Company:{}>'.format(self.com_name)
+
+
+class UserJob(Base):
+    """ User表与JobInfo表的中间表 """
+    __tablename__ = 'userjob'
+
+    uj_id = db.Column(db.Integer,primary_key=True)
+
+    # 与User表建立关系
+    user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
+    user = db.relationship('User',backref=db.backref('interm'))
+
+    # 与JobInfo表建立关系
+    job_id = db.Column(db.Integer,db.ForeignKey('jobinfo.job_id'))
+    job = db.relationship('JobInfo',backref=db.backref('interm'))
