@@ -10,7 +10,7 @@ def create_app(config):
 
     @app.route('/')
     def index():
-        return 'Index'
+        return render_template("base.html")
 
 
     return app
