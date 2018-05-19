@@ -5,9 +5,9 @@ from jobplus.models import db
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(configs.get(config))
-    
+
     # 数据库的初始化
-    db.init_app(app) 
+    db.init_app(app)
 
     register_blueprints(app)
 

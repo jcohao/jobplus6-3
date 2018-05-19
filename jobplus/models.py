@@ -1,5 +1,3 @@
-# coding:utf-8
-
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from flask import url_for
@@ -72,7 +70,7 @@ class JobInfo(Base):
     job_id = db.Column(db.Integer,primary_key=True)
     title = db.Column(db.String(128),index=True,nullable=False)
     work_place = db.Column(db.String(128),nullable=False)
-    
+
     tags = db.Column(db.String(128),nullable=True)
     desc = db.Column(db.String(256))
     high_salary = db.Column(db.Integer)
@@ -81,7 +79,7 @@ class JobInfo(Base):
     degree = db.Column(db.String(24))
     # 上线标志，1-上线，0-下线
     isonline = db.Column(db.Boolean,default=1)
-    
+
     # 关联到ComInfo表中的company
     comp_id = db.Column(db.Integer,db.ForeignKey('cominfo.com_id',ondelete='CASCADE'))
     company = db.relationship('ComInfo',uselist=False,backref=db.backref("job"))
@@ -93,10 +91,10 @@ class JobInfo(Base):
 class ComInfo(Base):
     """ 企业用户信息扩展表 """
     __tablename__ = 'cominfo'
-    # 与user表的关系为 1对1 
+    # 与user表的关系为 1对1
     com_id = db.Column(db.Integer,db.ForeignKey('user.id',ondelete='CASCADE'),primary_key=True)
     user = db.relationship('User',uselist=False,backref=db.backref("company"))
-    
+
     com_name = db.Column(db.String(128))
     com_email = db.Column(db.String(64),unique=True,nullable=False)
     com_phone = db.Column(db.Integer,unique=True,nullable=False)
@@ -112,13 +110,13 @@ class ComInfo(Base):
 class UserJob(Base):
     """ User表与JobInfo表的中间表 """
     __tablename__ = 'userjob'
-    
+
     uj_id = db.Column(db.Integer,primary_key=True)
 
     # 与User表建立关系
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
     user = db.relationship('User',backref=db.backref('interm'))
-    
+
     # 与JobInfo表建立关系
     job_id = db.Column(db.Integer,db.ForeignKey('jobinfo.job_id'))
     job = db.relationship('JobInfo',backref=db.backref('interm'))
