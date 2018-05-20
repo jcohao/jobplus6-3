@@ -1,24 +1,31 @@
-<!-- ????2???????? form ???????? url -->
+<!-- 需要传入两个参数，要渲染的form和点击提交请求的url -->
 {% macro render_form(form, url) %}
 <form method="POST" action="{{ url }}">
-  <!-- ? csrf_token ?????????? -->
+  <!-- 隐藏的csrf_token请求保护 -->
   {{ form.csrf_token }}
-  <!-- ?????? field -->
+  <!-- 迭代每一个field -->
   {% for field in form %}
-    <!-- ??? csrf_token ?????? -->
+    <!-- 如果是csrf_token则跳过不渲染 -->
     {% if field.type == 'CSRFTokenField' %}
     {{ '' }}
-    <!-- SubmitField ?????? -->
+    <!-- SubmitField 单独处理 -->
     {% elif field.type == 'SubmitField' %}
     {{ form.submit(class='btn btn-primary', type='submit') }}
-    <!-- BooleanField ?????? -->
+    <!-- BooleanField 单独处理 -->
     {% elif field.type == 'BooleanField' %}
     <div class="checkbox">
       <label>{{ field() }} {{ field.label.text }}</label>
     </div>
     {% else %}
-    <div class="form-group">
+    <!-- 如果有错误，则添加has-error类 -->
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
       {{ field.label }} {{ field(class='form-control') }}
+      <!-- 当errors不为空，遍历显示每一个error -->
+      {% if field.errors %}
+            {% for error in field.errors %}
+                <span class="help-block">{{ error }}</span>
+            {% endfor %}
+      {% endif %}
     </div>
     {% endif %}
   {% endfor %}
