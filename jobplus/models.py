@@ -53,7 +53,7 @@ class User(Base,UserMixin):
         """ 存入password """
         self._password = generate_password_hash(orig_password)
 
-    def check_password():
+    def check_password(self, password):
         """ 判断用户输入的密码和存储的hash密码是否相等 """
         return check_password_hash(self._password,password)
 
