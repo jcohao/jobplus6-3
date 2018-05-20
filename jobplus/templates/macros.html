@@ -1,26 +1,34 @@
-<!-- ????2???????? form ???????? url -->
-{% macro render_form(form, url) %}
-<form method="POST" action="{{ url }}">
-  <!-- ? csrf_token ?????????? -->
-  {{ form.csrf_token }}
-  <!-- ?????? field -->
-  {% for field in form %}
-    <!-- ??? csrf_token ?????? -->
-    {% if field.type == 'CSRFTokenField' %}
-    {{ '' }}
-    <!-- SubmitField ?????? -->
-    {% elif field.type == 'SubmitField' %}
-    {{ form.submit(class='btn btn-primary', type='submit') }}
-    <!-- BooleanField ?????? -->
-    {% elif field.type == 'BooleanField' %}
-    <div class="checkbox">
-      <label>{{ field() }} {{ field.label.text }}</label>
-    </div>
-    {% else %}
-    <div class="form-group">
-      {{ field.label }} {{ field(class='form-control') }}
-    </div>
-    {% endif %}
-  {% endfor %}
+<!-- 需要传入2个参数：要渲染的from和点击提交的url -->
+{% macro render_form(form,url)  %}
+<form method="POST",action="{{ url }}">
+    <!-- 将 csrf_token渲染在表单开始的位置 -->
+    {{ form.csrf_token }}
+    <!--迭代每个表单 field -->
+    {% for field in form %}
+        <!-- 如果是csrf_token 就不再渲染了 -->
+        {% if field.type == 'CSRFTokenField' %}
+        {{''}}
+        <!-- SubmitField单独特殊处理 -->
+        {% elif field.type == 'SubmitField' %}
+        {{ form.submit(class='btn btn-primary',type='submit') }}
+        <!-- BooleanField单独处理 -->
+        {% elif field.type == 'BooleanField' %}
+        <div class='checkbox'>
+            <label>{{ field() }}{{ field.label.text }}</label>
+        </div>
+        {% else %}
+        <!-- 当errors不为空，添加has-error类，这样输入框就变成红色了 -->
+        <div class='form-group'>
+            {{ field.label }}{{ field(class='form-control') }}
+            <!-- 当errors不为空，遍历显示每一个error -->
+            {% if field.errors %}
+                {% for error in field.errors %}
+                <!-- 根据Bootstrap样式错误信息显示类为help-block的span标签中 -->
+                <span class="help-block">{{ error }}</span>
+                {% endfor%}
+            {% endif %}
+        </div>
+        {% endif %}
+    {% endfor %}
 </form>
 {% endmacro %}
