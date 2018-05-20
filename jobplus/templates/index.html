@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+
+{% block title %}Home{% endblock %}
+
+{% block head %}
+    <div class="jumbotron">
+        <h1>Hello, Welcome to Jobplus!</h1>
+        <p>领先的互联网求职平台</p>
+{#        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>#}
+    </div>
+{% endblock %}
+
+{% block body %}
+<!-- Collect the nav links, forms, and other content for toggling -->
+      <ul class="nav nav-tabs list-title">
+        <li role="presentation" class="active"><a href="#">最新职位</a></li>
+      </ul>
+
+     <div class="new-job-list">
+          <div class="col-sm-6 col-md-4 ">
+              <div class="job-box">
+              <div class="caption">
+                <a href="#">
+                <b>这里是职位名称</b> <span class="timesince">[1天前]</span>
+                <p>经验要求 学历要求</p>
+                <span class="label label-default">标签</span>
+                <span class="label label-default">标签</span>
+                <span class="label label-default">标签</span>
+                </a>
+              </div>
+              <hr>
+              <div class="media">
+                <div class="media-left">
+                  <a href="#">
+                  <img class="media-object" src="one logo is in here" width="40" height="40" alt="...">
+                  </a>
+                  </div>
+                  <div class="media-body">
+                  <a href="#">
+                  <h4 class="media-heading">企业名字</h4>
+                  </a>
+                  <span class="company-meta">企业信息</span>
+                  </div>
+              </div>
+              </div>
+          </div>
+        <div class="col-sm-6 col-md-4">
+              <div class="job-box">
+              <div class="caption">
+                <a href="#">
+                <b>这里是职位名称</b> <span class="timesince">[1天前]</span>
+                <p>经验要求 学历要求</p>
+                <span class="label label-default">标签</span>
+                <span class="label label-default">标签</span>
+                <span class="label label-default">标签</span>
+                </a>
+              </div>
+              <hr>
+              <div class="media">
+                <div class="media-left">
+                  <a href="#">
+                  <img class="media-object" src="one logo is in here" width="40" height="40" alt="...">
+                  </a>
+                  </div>
+                  <div class="media-body">
+                  <a href="#">
+                  <h4 class="media-heading">企业名字</h4>
+                  </a>
+                  <span class="company-meta">企业信息</span>
+                  </div>
+              </div>
+              </div>
+          </div>
+
+     </div>
+    <p class="list-more">
+    <a href="/" class="btn btn-success btn-lg list-more-btn">查看更多</a>
+    </p>
+
+    <ul class="nav nav-tabs list-title">
+        <li role="presentation" class="active"><a href="#">最新公司</a></li>
+      </ul>
+    <div class="new-company-list">
+        <div class="col-sm-6 col-md-3">
+            <div class="thumbnail">
+            <a href="#">
+              <img src="#" width="100" height="100" alt="...">
+              <h3>企业名称</h3>
+              <p>企业简介</p>
+            </a>
+          <hr>
+          <a href="#">
+            <p>在招职位：0</p>
+          </a>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="thumbnail">
+            <a href="#">
+              <img src="#" width="100" height="100" alt="...">
+              <h3>企业名称</h3>
+              <p>企业简介</p>
+            </a>
+          <hr>
+          <a href="#">
+            <p>在招职位：0</p>
+          </a>
+          </div>
+        </div>
+
+    </div>
+    <p class="list-more">
+    <a href="/" class="btn btn-success btn-lg list-more-btn">查看更多</a>
+    </p>
+
+{% endblock %}

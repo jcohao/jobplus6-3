@@ -3,3 +3,17 @@
 	margin: 0 auto;
 }
 
+.list-title {
+    margin: 0 15px;
+}
+
+.new-job-list, .new-company-list {
+    margin-top: 15px;
+}
+
+.list-more-btn {
+    padding: 10px 138px;
+	color: #5cb85c;
+    background-color: #fff;
+}
+
