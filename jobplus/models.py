@@ -34,9 +34,12 @@ class User(Base,UserMixin):
     #password 指定列名
     _password = db.Column('password',db.String(256),nullable=False)
     role = db.Column(db.SmallInteger,default=ROLE_USER)
+    
+    # 以下信息为用户补充信息
+    realname = db.Column(db.String(32))
     resume = db.Column(db.String(128))
-    # 逻辑删除标记，若不用，可忽略,0-删除,1-未删除
-    isdeleted = db.Column(db.SmallInteger,default=0)
+    phone = db.Column(db.String(12))
+    exp = db.Column(db.String(24))
 
     def __repr__(self):
         return '<User:{}>'.format(self.username)
