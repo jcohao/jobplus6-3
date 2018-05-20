@@ -15,11 +15,12 @@ def create_app(config):
 
 # 注册蓝图的函数
 def register_blueprints(app):
-    from .handlers import front, jobs, company, admin
+    from .handlers import front, jobs, company, admin, user
     app.register_blueprint(front)
     app.register_blueprint(jobs)
     app.register_blueprint(company)
     app.register_blueprint(admin)
+    app.register_blueprint(user)
 
 # 用于将Flask扩展注册到app
 def register_extensions(app):
