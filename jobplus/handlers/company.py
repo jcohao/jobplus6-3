@@ -45,3 +45,4 @@ def details(company_id):
 def dt_jobs(company_id):
     c_company = ComInfo.query.get_or_404(company_id)
     return render_template('company/dt_jobs.html',c_company=c_company)
+
