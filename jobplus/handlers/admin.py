@@ -23,6 +23,15 @@ def jobs():
     )
     return render_template('admin/jobs.html', pagination=pagination)
 
+@admin.route('/jobs/<int:job_id>/update')
+@super_admin_required
+def reverse_job_status(job_id):
+    job = JobInfo.query.get_or_404(job_id)
+    job.change_status()
+    db.session.add(job)
+    db.session.commit()
+    flash('操作成功', 'success')
+    return redirect(url_for('admin.jobs'))
 
 @admin.route('/users')
 @super_admin_required

@@ -1,10 +1,6 @@
 # *_* coding: utf-8 *_*
 
-<<<<<<< HEAD
-from flask import abort 
-=======
 from flask import abort
->>>>>>> 1e572d3242299aedd06b587a6eb0862da8163f80
 from flask_login import current_user
 from functools import wraps
 from jobplus.models import User
