@@ -35,6 +35,7 @@ def setdetail():
         return redirect(url_for('company.index'))
     return render_template('company/set_details.html',form=form)
 
+
 # 企业详情页面
 @company.route('/<int:company_id>')
 def details(company_id):
@@ -45,3 +46,4 @@ def details(company_id):
 def dt_jobs(company_id):
     c_company = ComInfo.query.get_or_404(company_id)
     return render_template('company/dt_jobs.html',c_company=c_company)
+
