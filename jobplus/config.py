@@ -14,6 +14,7 @@ class DevelopmentConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     pass
 
+
 class TestingConfig(BaseConfig):
     pass
 

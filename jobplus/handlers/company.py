@@ -30,7 +30,7 @@ def setdetail():
     form.com_email.data = current_user.email
     
     if form.validate_on_submit():
-        form.set_details(current_user,com_tmp)
+        form.set_details(current_user, com_tmp)
         flash('更新信息成功!','success')
         return redirect(url_for('company.index'))
     return render_template('company/set_details.html',form=form)
@@ -40,10 +40,10 @@ def setdetail():
 @company.route('/<int:company_id>')
 def details(company_id):
     c_company = ComInfo.query.get_or_404(company_id)
-    return render_template('company/details.html',c_company=c_company)
+    return render_template('company/details.html', c_company=c_company)
+
 
 @company.route('/<int:company_id>/jobs')
 def dt_jobs(company_id):
     c_company = ComInfo.query.get_or_404(company_id)
-    return render_template('company/dt_jobs.html',c_company=c_company)
-
+    return render_template('company/dt_jobs.html', c_company=c_company)
