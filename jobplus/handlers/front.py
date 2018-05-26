@@ -1,8 +1,8 @@
 import re
 from flask import Blueprint, render_template, url_for, flash, redirect, current_app
 from jobplus.forms import LoginForm, RegisterForm, RegisterComForm
-from flask_login import login_user
-from jobplus.models import User
+from flask_login import login_user, logout_user, login_required
+from jobplus.models import User, ComInfo
 from jobplus.models import JobInfo as Job
 
 
@@ -17,7 +17,13 @@ def index():
         per_page=current_app.config['INDEX_PER_PAGE'],
         error_out=False
     )
-    return render_template('index.html', pagination=pagination, active='jobs')
+
+    com_pagination = ComInfo.query.order_by(ComInfo.created_at.desc()).paginate(
+        page=1,
+        per_page=current_app.config['COMINFO_PER_PAGE'],
+        error_out=False
+    )
+    return render_template('index.html', pagination=pagination, com_pagination=com_pagination, active='jobs')
 
 
 # 登录视图函数
@@ -31,8 +37,21 @@ def login():
         else:
             user = User.query.filter_by(username=form.username_or_email.data).first()
         login_user(user, form.remember_me.data)
-        return redirect(url_for('.index'))
+        # 这里后面要填写定向到哪个页面
+        if user.status:
+            flash('登录成功', 'success')
+            return redirect(url_for('.index'))
+        else:
+            flash('用户被禁用', 'danger')
     return render_template('login.html', form=form)
+
+
+@front.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('您已经退出登录', 'success')
+    return redirect(url_for('.index'))
 
 
 # 注册视图函数

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{#管理页面 以后都继承这个模板吧，我把admin/index.html删除了 #}
+
+{% block title %}
+    管理页面
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-2">
+            <h4>管理</h4>
+            <div class="list-group">
+                {% if current_user.is_admin %}
+                <a href="{{ url_for('admin.users') }}" class="list-group-item">用户管理</a>
+                {% endif %}
+                <a href="{{ url_for('admin.jobs') }}" class="list-group-item">职位管理</a>
+            </div>
+
+            {% block operation %}{% endblock %}
+        </div>
+        <div class="col-md-10">
+            {% block admin %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

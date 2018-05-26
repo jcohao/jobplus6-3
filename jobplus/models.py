@@ -27,9 +27,11 @@ class User(Base,UserMixin):
     ROLE_COMPANY = 20
     ROLE_ADMIN = 30
 
+
     id = db.Column(db.Integer,primary_key=True)
     username = db.Column(db.String(32),unique=True,index=True,nullable=False)
     email = db.Column(db.String(64),unique=True,index=True,nullable=False)
+    coms = db.relationship('ComInfo')
 
     #password 指定列名
     _password = db.Column('password',db.String(256),nullable=False)
@@ -40,6 +42,8 @@ class User(Base,UserMixin):
     resume = db.Column(db.String(128))
     phone = db.Column(db.String(12))
     exp = db.Column(db.String(24))
+    # 用户禁用启用标志 True为启用
+    status = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return '<User:{}>'.format(self.username)
@@ -64,6 +68,10 @@ class User(Base,UserMixin):
     @property
     def is_company(self):
         return self.role == self.ROLE_COMPANY
+
+    @property
+    def is_disable(self):
+        return not self.status
 
 
 class JobInfo(Base):
@@ -123,7 +131,7 @@ class UserJob(Base):
     # 与JobInfo表建立关系
     job_id = db.Column(db.Integer,db.ForeignKey('jobinfo.job_id'))
     job = db.relationship('JobInfo',backref=db.backref('interm'))
-    
+
     # 简历链接
     resume = db.Column(db.String(128))
     # 简历状态 0-待查看，1-已拒绝，2-面试
