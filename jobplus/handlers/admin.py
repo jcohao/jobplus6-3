@@ -1,16 +1,35 @@
 from flask import Blueprint, render_template, request, current_app, redirect, url_for, flash
-from jobplus.decorators import super_admin_required
+from jobplus.decorators import super_admin_required, company_required
 from jobplus.models import User, ComInfo, JobInfo
 from jobplus.forms import db, UserForm, Add_UserForm, Add_ComForm, CompanyForm
+from flask_login import login_user
+
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
-
+# 管理员管理页面
 @admin.route('/')
 @super_admin_required
 def index():
     return render_template('admin/admin_base.html')
 
+# 企业管理页面
+@admin.route('/company')
+@company_required
+def admin_company():
+    return render_template('admin/admin_company.html')
+
+# 企业职位管理页面
+@admin.route('/<int:company_id>/jobs')
+@company_required
+def admin_company_jobs(company_id):
+    page = request.args.get('page', default=1, type=int)
+    pagination = JobInfo.query.filter_by(comp_id=company_id).paginate(
+        page=page,
+        per_page=current_app.config['ADMIN_PER_PAGE'],
+        error_out=False
+    )
+    return render_template('admin/jobs.html', pagination=pagination)
 
 @admin.route('/jobs')
 @super_admin_required
@@ -23,15 +42,19 @@ def jobs():
     )
     return render_template('admin/jobs.html', pagination=pagination)
 
-@admin.route('/jobs/<int:job_id>/update')
-@super_admin_required
-def reverse_job_status(job_id):
+@admin.route('/jobs/<int:user_id>/<int:job_id>/update')
+@company_required
+def reverse_job_status(job_id, user_id):
     job = JobInfo.query.get_or_404(job_id)
     job.change_status()
     db.session.add(job)
     db.session.commit()
     flash('操作成功', 'success')
-    return redirect(url_for('admin.jobs'))
+    user = User.query.get_or_404(user_id)
+    if user.is_admin:
+        return redirect(url_for('admin.jobs'))
+    elif user.is_company:
+        return redirect(url_for('admin.admin_company_jobs', company_id=user.id))
 
 @admin.route('/users')
 @super_admin_required
