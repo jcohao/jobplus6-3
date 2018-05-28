@@ -10,7 +10,7 @@ fake = Faker()
 
 def generate_data():
     db.create_all()
-    with open(os.path.join(os.path.dirname(__file__), '.', 'datas', 'data.json')) as file:
+    with open(os.path.join(os.path.dirname(__file__), '.', 'datas', 'data.json'), 'r', encoding='UTF-8') as file:
         datas = json.load(file)
     for data in datas:
         if not data['company_name']:
