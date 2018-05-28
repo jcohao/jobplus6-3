@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% from "macros.html" import render_form %}
+
+{% block title %}
+File Upload
+{% endblock %}
+
+{% block body %}
+<h4>File upload</h4>
+{{ render_form(form) }}
+<h3>{{ url }}</h3>
+{% endblock %}

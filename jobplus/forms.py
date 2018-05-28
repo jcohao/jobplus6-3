@@ -6,7 +6,7 @@ from wtforms import TextAreaField,IntegerField
 from wtforms.validators import Length,Email,EqualTo,Required,URL,NumberRange
 from wtforms import ValidationError
 from jobplus.models import User,JobInfo,ComInfo,db
-
+from flask_wtf.file import FileField, FileRequired
 
 class CompanyForm(FlaskForm):
     com_name = StringField('企业名称',validators=[Required(),Length(3,24)])
@@ -234,3 +234,9 @@ class Add_ComForm(FlaskForm):
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('邮箱已注册！')
+
+
+
+class UploadForm(FlaskForm):
+    file = FileField(validators=[FileRequired('文件未选择!')])
+    submit = SubmitField('上传')
