@@ -10,7 +10,6 @@ class DevelopmentConfig(BaseConfig):
     COMINFO_PER_PAGE = 9
     ADMIN_PER_PAGE = 15
 
-
 class ProductionConfig(BaseConfig):
     pass
 

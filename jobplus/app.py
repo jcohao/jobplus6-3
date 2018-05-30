@@ -1,10 +1,15 @@
+import os
+
 from flask import Flask, render_template
 from jobplus.config import configs
 from jobplus.models import db, User
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from datetime import datetime
+from flask_uploads import UploadSet, configure_uploads, patch_request_class
 
+# 上传的文件集合
+files = UploadSet('files')
 
 def create_app(config):
     app = Flask(__name__)
@@ -16,6 +21,8 @@ def create_app(config):
     register_blueprints(app)
     # 注册自定义过滤器
     app.add_template_filter(get_jobdelta)
+    # 用于文件上传
+    create_uploads(app)
 
     return app
 
@@ -50,3 +57,11 @@ def register_extensions(app):
 def get_jobdelta(value):
     job_del = datetime.now() - value
     return job_del.days
+
+# 文件上传注册函数
+def create_uploads(app):
+    app.config['UPLOADED_FILES_DEST'] = os.getcwd()
+    configure_uploads(app, files)
+    # 最大上传2MB的文件 
+    patch_request_class(app, 2 * 1024 * 1024)
+    return app

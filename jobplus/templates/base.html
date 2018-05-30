@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+<html>
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}{% endblock %}</title>
@@ -26,8 +27,10 @@
         <ul class="nav navbar-nav">
             <li><a href="{{ url_for('jobs.index') }}">职位<span class="sr-only">(current)</span></a></li>
             <li><a href="{{ url_for('company.index') }}">公司</a></li>
-            {% if current_user.is_authenticated and current_user.is_admin or current_user.is_company %}
+            {% if current_user.is_authenticated and current_user.is_admin %}
                 <li><a href="{{ url_for('admin.index') }}">管理</a></li>
+            {% elif current_user.is_authenticated and current_user.is_company %}
+                <li><a href="{{ url_for('admin.admin_company') }}">管理</a></li>
             {% endif %}
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -46,6 +49,7 @@
                         <li>
                             <a href="{% if current_user.is_company %} {{ url_for('company.setdetail') }} {% else %} {{ url_for('user.setinfo') }} {% endif %}">修改信息</a>
                         </li>
+                        <li><a href="{{ url_for('user.upload') }}">Resume</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ url_for('front.logout') }}">退出登录</a></li>
                     </ul>
