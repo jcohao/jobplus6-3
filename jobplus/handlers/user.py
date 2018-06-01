@@ -28,12 +28,13 @@ def setinfo():
         return redirect(url_for('user.index'))
     return render_template('user/set_info.html', form=form)
 
-@user.route('/upload', methods=['GET', 'POST'])
+@user.route('/upload/<int:user_id>', methods=['GET', 'POST'])
 @login_required
-def upload():
+def upload(user_id):
     form = UploadForm()
+    file_name = str(user_id) + '.'
     if form.validate_on_submit():
-        filename = files.save(form.file.data)
+        filename = files.save(form.file.data, name=file_name)
         file_url = files.url(filename)
     else:
         file_url = None

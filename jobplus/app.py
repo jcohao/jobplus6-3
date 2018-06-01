@@ -60,7 +60,7 @@ def get_jobdelta(value):
 
 # 文件上传注册函数
 def create_uploads(app):
-    app.config['UPLOADED_FILES_DEST'] = os.getcwd()
+    app.config['UPLOADED_FILES_DEST'] = os.path.join(os.getcwd(), 'resumes')
     configure_uploads(app, files)
     # 最大上传2MB的文件 
     patch_request_class(app, 2 * 1024 * 1024)
